@@ -1,0 +1,4 @@
+from pydantic import BaseModel, Field
+
+class Course(BaseModel):
+    name: str = Field(..., min_length=1)
