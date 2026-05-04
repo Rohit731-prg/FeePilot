@@ -4,13 +4,12 @@ from app.Config.ConnectDB import engine
 
 base = declarative_base()
 
-class Batch(base):
-    __tablename__ = "Batch"
-
+class Payment():
     id = Column(Integer, primary_key=True, index=True)
-    course_id = Column(Integer, ForeignKey="Course.id")
-    teacher_id = Column(Integer, ForeignKey="Admin.id")
-    year = Column(Integer)
-    batch_name = Column(String)
+    student_id = Column(Integer, ForeignKey="Student.id")
+    subject_id = Column(Integer, ForeignKey="Subject.id")
+    amount = Column(Integer)
+    payment_date = Column(String)
+    month_for = Column(String)
 
 base.metadata.create_all(bind=engine)

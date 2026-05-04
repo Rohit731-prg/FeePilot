@@ -4,13 +4,14 @@ from app.Config.ConnectDB import engine
 
 base = declarative_base()
 
-class Batch(base):
-    __tablename__ = "Batch"
+class Student(base):
+    __tablename__ = "Student"
 
     id = Column(Integer, primary_key=True, index=True)
-    course_id = Column(Integer, ForeignKey="Course.id")
-    teacher_id = Column(Integer, ForeignKey="Admin.id")
-    year = Column(Integer)
-    batch_name = Column(String)
+    name = Column(String)
+    phone = Column(String)
+    professor_id = Column(Integer, ForeignKey="Admin.id")
+    batch_id = Column(Integer, ForeignKey="Batch.id")
+    join_date  = Column(String)
 
 base.metadata.create_all(bind=engine)

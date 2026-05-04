@@ -4,7 +4,7 @@ from app.DB.Admin_DB_Model import Admin
 from app.Utils.PasswordEncoder import generatePassword, compairPassord
 from app.Utils.Otp import generateOTP
 from app.Utils.JWT_token import generateToken
-from app.Utils.SendMail import send_mail
+# from app.Utils.SendMail import send_mail
 
 async def create_new_admin(db: Session, data) -> dict:
     try:
@@ -26,7 +26,7 @@ async def create_new_admin(db: Session, data) -> dict:
         db.commit()
         db.refresh(new_admin)
 
-        send_mail(data.email, otp)
+        # send_mail(data.email, otp)
         return {
             "message": "New Admin create",
         }
@@ -74,4 +74,3 @@ async def login(db: Session, data) -> dict:
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
