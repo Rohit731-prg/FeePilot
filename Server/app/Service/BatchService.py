@@ -19,3 +19,16 @@ async def create_new_batch(db: Session, data: dict) -> dict:
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+async def get_all_batches(db: Session, data: dict):
+    try:
+        batches_quary = db.query(Batch).filter(
+            Batch.course_id == data["course_id"],
+            Batch.professor_id == data["professor_id"]
+        ).all()
+        return batches_quary
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

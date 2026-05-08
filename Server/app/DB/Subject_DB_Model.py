@@ -9,3 +9,5 @@ class Subject(base):
     batch_id = Column(Integer, ForeignKey="Batch.id")
     name = Column(String)
     default_fee = Column(Integer)
+
+base.metadata.create_all(bind=engine)

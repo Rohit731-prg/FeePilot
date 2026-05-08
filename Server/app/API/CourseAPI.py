@@ -3,6 +3,7 @@ from app.Model.Course_Model import Course
 from app.Config.ConnectDB import get_db
 from app.Service.CourseService import create_new_Course, get_all_course
 from sqlalchemy.orm.session import Session
+from app.Middleware.verify import verify
 
 router = APIRouter(
     prefix="/api/course"
@@ -12,10 +13,14 @@ router = APIRouter(
 async def create_new_course_route(
     data: Course,
     response: Response,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_id: int = Depends(verify)
 ) -> dict:
     try:
-        res = await create_new_Course(db, data)
+        res = await create_new_Course(db, {
+            "name": data.name,
+            "professor_id": user_id
+        })
         response.status_code = 201
         return res
     except HTTPException as e:
@@ -27,10 +32,11 @@ async def create_new_course_route(
 @router.get("/get-course")
 async def get_all_course_route(
     response: Response,
-    db = Depends(get_db)
+    db: Session = Depends(get_db),
+    user_id: int = Depends(verify)
 ):
     try:
-        data = await get_all_course(db)
+        data = await get_all_course(db, {"professor_id": user_id})
         response.status_code = 200
         return data
     except HTTPException as e:

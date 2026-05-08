@@ -74,3 +74,18 @@ async def login(db: Session, data) -> dict:
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+async def fetch_teacher_by_student(db: Session, data) -> dict:
+    try:
+        admin = db.query(Admin).all()
+        if not admin:
+            raise HTTPException(status_code=400, detail="No User found")
+        
+        return {
+            "teacher": admin
+        }
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
