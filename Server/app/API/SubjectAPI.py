@@ -6,7 +6,7 @@ from sqlalchemy.orm.session import Session
 from app.Middleware.verify import verify
 
 router = APIRouter(
-    prefix="api/subject"
+    prefix="/api/subject"
 )
 
 @router.post("/create-new-subject")
@@ -14,7 +14,7 @@ async def create_new_subject_route(
     data: Subject,
     res: Response,
     db: Session = Depends(get_db),
-    user_id: int = Depends(verify),
+    user_id: dict = Depends(verify),
 ) -> dict:
     try:
         new_data = {

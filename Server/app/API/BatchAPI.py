@@ -13,13 +13,13 @@ router = APIRouter(
 async def create_new_batch_route(
     data: Batch,
     res: Response,
-    user_id: int = Depends(verify),
+    user_id: dict = Depends(verify),
     db: Session = Depends(get_db)
 ) -> dict:
     try:
         new_batch = {
             "course_id": data.course_id,
-            "teacher_id": user_id,
+            "teacher_id": user_id["id"],
             "year": data.year,
             "batch_name": data.batch_name
         }

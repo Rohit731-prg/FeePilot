@@ -14,12 +14,12 @@ async def create_new_course_route(
     data: Course,
     response: Response,
     db: Session = Depends(get_db),
-    user_id: int = Depends(verify)
+    user_id: dict = Depends(verify)
 ) -> dict:
     try:
         res = await create_new_Course(db, {
             "name": data.name,
-            "professor_id": user_id
+            "professor_id": user_id["id"]
         })
         response.status_code = 201
         return res

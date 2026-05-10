@@ -8,16 +8,16 @@ from app.Utils.JWT_token import generateToken
 
 async def create_new_admin(db: Session, data) -> dict:
     try:
-        is_exist = db.query(Admin).filter(Admin.email == data.email).first()
+        is_exist = db.query(Admin).filter(Admin.email == data["email"]).first()
         if is_exist:
             raise HTTPException(status_code=400, detail="Email is already in DB")
         
-        hashPassword = generatePassword(data.password)
+        hashPassword = await generatePassword(data["password"])
         otp = generateOTP()
 
         new_admin = Admin(
-            name = data.name,
-            email = data.email,
+            name = data["name"],
+            email = data["email"],
             password = hashPassword,
             OTP = otp,
             auth = False
@@ -38,11 +38,11 @@ async def create_new_admin(db: Session, data) -> dict:
 
 async def autherrized(db: Session, data) -> dict:
     try:
-        admin = db.query(Admin).filter(Admin.email == data.email).first()
+        admin = db.query(Admin).filter(Admin.email == data["email"]).first()
         if not admin:
             raise HTTPException(status_code=400, detail="Email not found")
         
-        if data.otp != admin.OTP:
+        if data["otp"] != admin.OTP:
             raise HTTPException(status_code=400, detail="OTP does not match")
         
         admin.auth = True # type: ignore
@@ -59,11 +59,11 @@ async def autherrized(db: Session, data) -> dict:
 
 async def login(db: Session, data) -> dict:
     try:
-        admin = db.query(Admin).filter(Admin.email == data.email).first()
+        admin = db.query(Admin).filter(Admin.email == data["email"]).first()
         if not admin:
             raise HTTPException(status_code=400, detail="No User found")
         
-        varify_password = compairPassord(data.password, str(admin.password))
+        varify_password = compairPassord(data["password"], str(admin.password))
         if not varify_password:
             raise HTTPException(status_code=400, detail="Password does not match")
         
@@ -72,20 +72,5 @@ async def login(db: Session, data) -> dict:
             "user": admin,
             "token": token
         }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    
-
-async def fetch_teacher_by_student(db: Session, data) -> dict:
-    try:
-        admin = db.query(Admin).all()
-        if not admin:
-            raise HTTPException(status_code=400, detail="No User found")
-        
-        return {
-            "teacher": admin
-        }
-    except HTTPException as e:
-        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

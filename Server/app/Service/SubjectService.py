@@ -4,6 +4,7 @@ from app.DB.Subject_DB_Model import Subject
 
 async def create_new_subject(db: Session, data: dict) -> dict:
     try:
+        print(data)
         new_subject = Subject(
             batch_id = data["batch_id"],
             name = data["name"],

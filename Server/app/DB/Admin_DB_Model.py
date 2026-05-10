@@ -1,8 +1,5 @@
-from sqlalchemy.ext.declarative import declarative_base
-from app.Config.ConnectDB import engine
 from sqlalchemy import Column, Integer, String, Boolean
-
-base = declarative_base()
+from app.Config.ConnectDB import base
 
 class Admin(base):
     __tablename__ = "Admin"
@@ -13,5 +10,3 @@ class Admin(base):
     password = Column(String)
     auth = Column(Boolean, default=False)
     OTP = Column(String)
-
-base.metadata.create_all(bind=engine)

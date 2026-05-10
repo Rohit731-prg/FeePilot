@@ -9,3 +9,4 @@ class Subject(BaseModel):
     def check_default_fee(cls, vle):
         if vle < 0:
             raise ValueError("Default fess must be grater then 0")
+        return vle
