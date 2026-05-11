@@ -1,8 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
-from app.Config.ConnectDB import engine
-from sqlalchemy.ext.declarative import declarative_base
-
-base = declarative_base()
+from app.Config.ConnectDB import base
 
 class Student_Subject(base):
     __tablename__ = "Student_Subject"

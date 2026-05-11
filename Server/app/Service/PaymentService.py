@@ -178,7 +178,7 @@ async def fetch_all_due_payments(db: Session, data):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-def fetch_payment_by_student(db: Session, data):
+async def fetch_payment_by_student(db: Session, id):
     try:
         payments = []
         payment_records = db.query(
@@ -186,7 +186,7 @@ def fetch_payment_by_student(db: Session, data):
             func.sum(Payment.amount).label("total_paid"),
             func.max(Payment.expected_payment_amount).label("total_fee")
         ).filter(
-            Payment.student_id == data["student_id"]
+            Payment.student_id == id
         ).group_by(
             Payment.month_for
         ).group_by(

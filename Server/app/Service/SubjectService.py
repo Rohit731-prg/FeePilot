@@ -1,6 +1,8 @@
 from sqlalchemy.orm.session import Session
 from fastapi import HTTPException
 from app.DB.Subject_DB_Model import Subject
+from app.DB.Student_Subject_DB_Model import Student_Subject
+from app.DB.Batch_DB_Model import Batch
 
 async def create_new_subject(db: Session, data: dict) -> dict:
     try:
@@ -16,6 +18,72 @@ async def create_new_subject(db: Session, data: dict) -> dict:
         return {
             "message": "New subject added"
         }
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+async def get_all_subjects_by_student(db: Session, data):
+    try:
+        subjects = db.query(
+            Student_Subject,
+            Subject
+        ).join(
+            Subject,
+            Student_Subject.subject_id == Subject.id
+        ).filter(
+            Student_Subject.student_id == data,
+            Student_Subject.end_date == False
+        ).all()
+
+        if not subjects:
+            raise HTTPException(
+                status_code=400,
+                detail="No records found"
+            )
+
+        response = []
+        for student_subject, subject in subjects:
+            response.append({
+                "id": student_subject.id,
+                "student_id": student_subject.student_id,
+                "subject_id": student_subject.subject_id,
+                "fee_at_join_time": student_subject.fee_at_join_time,
+                "start_date": student_subject.start_date,
+                "end_date": student_subject.end_date,
+                "subject_details": {
+                    "id": subject.id,
+                    "name": subject.name,
+                    "default_fee": subject.default_fee
+                }
+            })
+        return response
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+async def get_subjects_all(db: Session, id): # id is student id
+    try:
+        all_subjects = db.query(Subject).join(
+            Batch,
+            Batch.id == Subject.batch_id
+        ).filter(
+            Batch.teacher_id == id
+        ).all()
+        response = []
+        for subject in all_subjects:
+            sub = {
+                "id": subject.id,
+                "name": subject.name,
+                "default_fee": subject.default_fee
+            }
+            response.append(sub)
+        if not all_subjects:
+            raise HTTPException(status_code=400, detail="No records found")
+        return response
     except HTTPException as e:
         raise e
     except Exception as e:

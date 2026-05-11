@@ -2,7 +2,6 @@ from sqlalchemy.orm.session import Session
 from fastapi import HTTPException
 from app.DB.Student_DB_Model import Student
 from app.Utils.PasswordEncoder import generatePassword, compairPassord
-from app.Service.Student_TeacherService import create_new_student_teacher
 
 async def create_new_student(db: Session, data: dict) -> dict:
     try:
@@ -26,13 +25,7 @@ async def create_new_student(db: Session, data: dict) -> dict:
         db.add(new_student)
         db.commit()
         db.refresh(new_student)
-
-        student_id = db.query(Student.id).filter(Student.phone == f"+91 {data['phone']}").scalar()
-        print("Student_id: ", student_id)
-        relation_table = await create_new_student_teacher(db, {"professor_id": data["professor_id"], "student_id": student_id })
-        if not relation_table:
-            raise HTTPException(status_code=500, detail="Student Teacher Table not create")
-        
+    
         return {
             "message": "New Student created"
         }

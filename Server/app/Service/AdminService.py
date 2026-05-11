@@ -52,7 +52,7 @@ async def autherrized(db: Session, data) -> dict:
             "message": "Admin authenticated successfully"
         }
     except HTTPException as e:
-        raise e  # re-raise properly
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -72,5 +72,32 @@ async def login(db: Session, data) -> dict:
             "user": admin,
             "token": token
         }
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+async def get_teacher_details(db: Session, id):
+    try:
+        teacher = db.query(
+            Admin.id,
+            Admin.email,
+            Admin.name
+        ).filter(
+            Admin.id == id
+        ).first()
+
+        if not teacher:
+            raise HTTPException(status_code=400, detail="No Records found")
+        
+        return {
+            "id": teacher.id,
+            "email": teacher.email,
+            "name": teacher.name
+        }
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    

@@ -5,7 +5,6 @@ from app.Config.ConnectDB import get_db
 from app.Model.Student_model import Student
 from app.Service.StudentService import create_new_student, fetch_all_students, fetch_students_by_batch, student_login, update_student_details
 from app.Model.Student_model import Update_Student
-from app.Service.Student_TeacherService import fetch_Teachers_by_Student
 
 router = APIRouter(
     prefix="/api/student"
@@ -108,16 +107,17 @@ async def update_student_details_route(
         raise HTTPException(status_code=500, detail=str(e))
     
 
-@router.get("/get-all-teachers/{id}")
+@router.get("/get-teacher")
 async def fetch_all_teachers_by_student_route(
     res: Response,
-    id: int,
+    id: str,
     db: Session = Depends(get_db)
 ):
     try:
-        response =  await fetch_Teachers_by_Student(db, id)
-        res.status_code = 200
-        return response
+        # # response =  await fetch_Teachers_by_Student(db, id)
+        # res.status_code = 200
+        # return response
+        pass
     except HTTPException as e:
         raise e
     except Exception as e:

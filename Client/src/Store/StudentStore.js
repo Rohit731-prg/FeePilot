@@ -2,9 +2,9 @@ import { create } from 'zustand'
 import api from '../Utils/axios';
 import toast from 'react-hot-toast';
 
-const useStudentStore = create((set) => ({
+const useStudentStore = create((set, get) => ({
     student: null,
-    teachers: null,
+    teacher: null,
     login_student: async (data) => {
         try {
             const response = api.post("/student/student-login", {
@@ -45,8 +45,9 @@ const useStudentStore = create((set) => ({
 
     get_teachers: async (id) => {
         try {
-            const response = await api.get(`/student/get-all-teachers/${id}`);
-            set({ teachers: response.data });
+            const response = await api.get(`/admin/teacher-details/${id}`);
+            console.log(response)
+            set({ teacher: response.data });
         } catch (error) {
             toast.error("Error to fetch Teachers")
             console.log(error)
