@@ -6,6 +6,7 @@ from app.API.BatchAPI import router as BatchRoute
 from app.API.SubjectAPI import router as SubjectRoute
 from app.API.StudentAPI import router as StudentRoute
 from app.API.Student_SubjectAPI import router as Stu_SubRoute
+from app.API.PaymentAPI import router as PaymentRoute
 from app.Config.ConnectDB import engine, base
 from app.DB.Student_DB_Model import Student
 from app.DB.Student_Subject_DB_Model import Student_Subject
@@ -15,6 +16,7 @@ from app.DB.Course_DB_Model import Course
 from app.DB.Subject_DB_Model import Subject
 from app.DB.Payment_DB_Model import Payment
 from app.DB.Student_Subject_DB_Model import Student_Subject
+from app.DB.Batch_Student_DB_Model import Batch_Student
 
 app = FastAPI()
 
@@ -34,3 +36,4 @@ app.include_router(BatchRoute)
 app.include_router(SubjectRoute)
 app.include_router(StudentRoute)
 app.include_router(Stu_SubRoute)
+app.include_router(PaymentRoute)

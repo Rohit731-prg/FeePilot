@@ -189,7 +189,7 @@ async def fetch_payment_by_student(db: Session, id):
             Payment.student_id == id
         ).group_by(
             Payment.month_for
-        ).group_by(
+        ).order_by(
             Payment.month_for.desc()
         ).all()
 

@@ -16,6 +16,12 @@ const usePaymentStore = create((set) => ({
             console.log(error?.response?.data?.details);
             console.log(error?.response?.data);
         }
+    },
+
+    get_all_due_payment: () => {
+        if (!get().payments) toast.error("No reacords found")
+        new_payment = get().payments.filter((payment) => payment.status == "due");
+        return new_payment
     }
 }));
 

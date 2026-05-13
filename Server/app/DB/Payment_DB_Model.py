@@ -1,8 +1,5 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey
-from app.Config.ConnectDB import engine
-
-base = declarative_base()
+from app.Config.ConnectDB import base
 
 class Payment(base):
     __tablename__ = "Payment"

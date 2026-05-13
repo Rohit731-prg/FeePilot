@@ -199,7 +199,7 @@ function Dashboard_Student() {
                 name: "My Batches",
                 desc: "Check your assigned batches and timing",
                 icon: <FaUserGraduate className="text-2xl" />,
-                navigate: "/student-payment"
+                navigate: "/student-batch"
               },
             ].map((item) => (
               <button

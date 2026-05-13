@@ -34,7 +34,7 @@ async def create_new_payment_route(
 
 @router.get("/get-payment-history-by-student/{id}")
 async def get_payments_by_students_route(
-    data: dict,
+    id: int,
     res: Response,
     db: Session = Depends(get_db),
 ):

@@ -9,3 +9,5 @@ class Batch(base):
     teacher_id = Column(Integer, ForeignKey("Admin.id"))
     year = Column(String)
     batch_name = Column(String)
+    time = Column(String)
+    day = Column(String)
