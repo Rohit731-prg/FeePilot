@@ -53,13 +53,13 @@ async def add_new_student_batch_route(
 async def get_all_batches_route(
     course_id: int,
     res: Response,
-    professor_id: int = Depends(verify),
+    professor_id = Depends(verify),
     db: Session = Depends(get_db)
 ):
     try:
         data = {
             "course_id": course_id,
-            "professor_id": professor_id
+            "professor_id": professor_id["id"]
         }
         batches = await get_all_batches(db, data)
         res.status_code = 200
@@ -74,7 +74,8 @@ async def get_all_batches_route(
 async def get_all_student_batches_route(
     id: int, # id = student id
     res: Response,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user = Depends(verify)
 ):
     try:
         resposene = await get_all_batches_by_Student(db, id)

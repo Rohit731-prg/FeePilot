@@ -3,6 +3,7 @@ from app.Model.Admin_model import Admin, Login
 from app.Config.ConnectDB import get_db
 from app.Service.AdminService import create_new_admin, autherrized, login, get_teacher_details
 from sqlalchemy.orm.session import Session
+from app.Middleware.verify import verify
 
 router = APIRouter(
     prefix="/api/admin"
@@ -59,7 +60,8 @@ async def login_teacher_route(
 async def teacher_details_route(
     id: int,
     res: Response,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user = Depends(verify)
 ):
     try:
         response = await get_teacher_details(db, id)

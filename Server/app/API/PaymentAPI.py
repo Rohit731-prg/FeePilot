@@ -37,6 +37,7 @@ async def get_payments_by_students_route(
     id: int,
     res: Response,
     db: Session = Depends(get_db),
+    user = Depends(verify)
 ):
     try:
         response = await fetch_payment_by_student(db, id)

@@ -80,6 +80,7 @@ async def student_login_route(
     res: Response,
     data: dict,
     db: Session = Depends(get_db),
+    user = Depends(verify)
 ):
     try:
         Response = await student_login(db, data)
@@ -96,6 +97,7 @@ async def update_student_details_route(
     res: Response,
     data: Update_Student,
     db: Session = Depends(get_db),
+    user = Depends(verify)
 ):
     try:
         response = await update_student_details(db, dict(data))
@@ -105,20 +107,4 @@ async def update_student_details_route(
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
 
-@router.get("/get-teacher")
-async def fetch_all_teachers_by_student_route(
-    res: Response,
-    id: str,
-    db: Session = Depends(get_db)
-):
-    try:
-        # # response =  await fetch_Teachers_by_Student(db, id)
-        # res.status_code = 200
-        # return response
-        pass
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))

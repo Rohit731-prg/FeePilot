@@ -37,6 +37,7 @@ async def get_subjects_by_Students(
     id: int,
     res: Response,
     db: Session = Depends(get_db),
+    user = Depends(verify)
 ):
     try:
         response = await get_all_subjects_by_student(db, id)
@@ -53,6 +54,7 @@ async def get_all_subjects(
     id: int,
     res: Response,
     db: Session = Depends(get_db),
+    user = Depends(verify)
 ):
     try:
         response = await get_subjects_all(db, id)

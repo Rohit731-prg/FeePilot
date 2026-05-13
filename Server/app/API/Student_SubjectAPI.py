@@ -2,6 +2,7 @@ from fastapi import APIRouter, Response, Depends, HTTPException
 from sqlalchemy.orm.session import Session
 from app.Config.ConnectDB import get_db
 from app.Service.Student_Subject import create_new_student_subject
+from app.Middleware.verify import verify
 
 router = APIRouter(
     prefix="/api/student-subject"
@@ -12,6 +13,7 @@ async def create_new_student_Subject_route(
     data: dict,
     res: Response,
     db: Session = Depends(get_db),
+    user = Depends(verify)
 ):
     try:
         respose = await create_new_student_subject(db, data)
