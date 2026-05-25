@@ -8,8 +8,6 @@ class Student(base):
     name = Column(String)
     phone = Column(String)
     email = Column(String)
-    professor_id = Column(Integer, ForeignKey("Admin.id"))
     batch_id = Column(Integer, ForeignKey("Batch.id"))
-    course_id = Column(Integer, ForeignKey("Course.id"))
     join_date  = Column(String)
     password = Column(String)

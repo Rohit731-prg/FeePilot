@@ -9,14 +9,12 @@ from app.API.Student_SubjectAPI import router as Stu_SubRoute
 from app.API.PaymentAPI import router as PaymentRoute
 from app.Config.ConnectDB import engine, base
 from app.DB.Student_DB_Model import Student
-from app.DB.Student_Subject_DB_Model import Student_Subject
 from app.DB.Admin_DB_Model import Admin
 from app.DB.Batch_DB_Model import Batch
 from app.DB.Course_DB_Model import Course
 from app.DB.Subject_DB_Model import Subject
 from app.DB.Payment_DB_Model import Payment
 from app.DB.Student_Subject_DB_Model import Student_Subject
-from app.DB.Batch_Student_DB_Model import Batch_Student
 
 app = FastAPI()
 

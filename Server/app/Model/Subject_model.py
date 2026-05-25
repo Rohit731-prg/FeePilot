@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field, field_validator
 
 class Subject(BaseModel):
-    batch_id: int = Field(...)
     name: str = Field(...)
     default_fee: float = Field(...)
     @field_validator("default_fee")

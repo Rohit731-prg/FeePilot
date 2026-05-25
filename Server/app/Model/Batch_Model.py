@@ -12,3 +12,4 @@ class Batch(BaseModel):
         return value
     
     batch_name: str = Field(...)
+    shedule: str = Field(...)

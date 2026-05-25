@@ -5,9 +5,7 @@ class Batch(base):
     __tablename__ = "Batch"
 
     id = Column(Integer, primary_key=True, index=True)
-    course_id = Column(Integer, ForeignKey("Course.id"))
-    teacher_id = Column(Integer, ForeignKey("Admin.id"))
-    year = Column(String)
     batch_name = Column(String)
-    time = Column(String)
-    day = Column(String)
+    course_id = Column(Integer, ForeignKey("Course.id"))
+    year = Column(String)
+    shedule = Column(String)

@@ -2,13 +2,12 @@ from sqlalchemy.orm.session import Session
 from fastapi import HTTPException
 from app.DB.Subject_DB_Model import Subject
 from app.DB.Student_Subject_DB_Model import Student_Subject
-from app.DB.Batch_DB_Model import Batch
+from app.DB.Batch_Subject_DB_Model import Batch_Subject
 
 async def create_new_subject(db: Session, data: dict) -> dict:
     try:
         print(data)
         new_subject = Subject(
-            batch_id = data["batch_id"],
             name = data["name"],
             default_fee = data["default_fee"]
         )
@@ -65,25 +64,27 @@ async def get_all_subjects_by_student(db: Session, data):
         raise HTTPException(status_code=500, detail=str(e))
     
 
-async def get_subjects_all(db: Session, id): # id is student id
+async def get_subjects_all(db: Session): # id is student id
     try:
-        all_subjects = db.query(Subject).join(
-            Batch,
-            Batch.id == Subject.batch_id
-        ).filter(
-            Batch.teacher_id == id
-        ).all()
-        response = []
-        for subject in all_subjects:
-            sub = {
-                "id": subject.id,
-                "name": subject.name,
-                "default_fee": subject.default_fee
-            }
-            response.append(sub)
+        all_subjects = db.query(Subject).all()
+        
         if not all_subjects:
             raise HTTPException(status_code=400, detail="No records found")
-        return response
+        return all_subjects
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+async def get_all_subjects_by_batch(db: Session, id):
+    try:
+        subjects = db.query(Subject).join(
+            Batch_Subject, Batch_Subject.subject_id == Subject.id
+        ).filter(
+            Batch_Subject.batch_id == id
+        ).all()
+        return subjects
     except HTTPException as e:
         raise e
     except Exception as e:

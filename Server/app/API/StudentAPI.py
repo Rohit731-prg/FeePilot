@@ -21,9 +21,7 @@ async def create_new_student_route(
         new_student = {
             "name": data.name,
             "phone": data.phone,
-            "professor_id": user_id["id"],
             "batch_id": data.batch_id,
-            "course_id": data.course_id,
             "join_date": data.join_date
         }
         response = await create_new_student(db, new_student)
@@ -42,10 +40,7 @@ async def fetch_all_students_route(
     user_id: int = Depends(verify),
 ):
     try:
-        data = {
-            "professor_id": user_id
-        }
-        response = await fetch_all_students(db, data)
+        response = await fetch_all_students(db)
         res.status_code = 200
         return response
     except HTTPException as e:
@@ -80,12 +75,19 @@ async def student_login_route(
     res: Response,
     data: dict,
     db: Session = Depends(get_db),
-    user = Depends(verify)
 ):
     try:
         Response = await student_login(db, data)
+        res.set_cookie(
+            key="access_token",
+            value=Response["token"],          # If you want the prefix, use: f"Bearer {token}"
+            httponly=True,        # Protects against XSS attacks (JS can't read it)
+            secure=True,          # Ensures cookie is only sent over HTTPS
+            samesite="lax",       # Protects against CSRF attacks
+            max_age=86400         # Cookie expiration in seconds (e.g., 1 day)
+        )
         res.status_code = 200
-        return Response
+        return Response["user"]
     except HTTPException as e:
         raise e
     except Exception as e:

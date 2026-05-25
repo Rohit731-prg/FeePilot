@@ -12,14 +12,13 @@ async def verify(
         db: Session = Depends(get_db),
     ):
     try:
-        auth_header = req.headers.get("Authorization")
-        if not auth_header:
-            raise HTTPException(status_code=400, detail="Unautherized")
-        
-        schema, token = auth_header.split(" ")
-        if schema.lower() != "bearer":
-            raise HTTPException( status_code=400, detail="Invalid authentication scheme")
+        token = req.cookies.get("access_token")
+
+        if not token:
+            raise HTTPException(status_code=401, detail="Unauthorized")
     
+        if token.lower().startswith("bearer "):
+            token = token.split(" ", 1)[1]
         payload = jwt.decode(token, setting.JWT_SCERET_KEY, algorithms=["HS256"])
         role = payload.get("role")
         id = payload.get("id")

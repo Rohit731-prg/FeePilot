@@ -67,7 +67,7 @@ async def login(db: Session, data) -> dict:
         if not varify_password:
             raise HTTPException(status_code=400, detail="Password does not match")
         
-        token = generateToken({ "id": admin.id })
+        token = generateToken({ "id": admin.id, "role": "admin" })
         return {
             "user": admin,
             "token": token

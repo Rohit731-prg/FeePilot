@@ -48,8 +48,16 @@ async def login_teacher_route(
 ):
     try:
         response = await login(db, dict(data))
+        res.set_cookie(
+            key="access_token",
+            value=response["token"],          # If you want the prefix, use: f"Bearer {token}"
+            httponly=True,        # Protects against XSS attacks (JS can't read it)
+            secure=True,          # Ensures cookie is only sent over HTTPS
+            samesite="lax",       # Protects against CSRF attacks
+            max_age=86400         # Cookie expiration in seconds (e.g., 1 day)
+        )
         res.status_code = 200
-        return response
+        return response["user"]
     except HTTPException as e:
         raise e
     except Exception as e:

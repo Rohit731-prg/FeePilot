@@ -2,22 +2,28 @@ from sqlalchemy.orm.session import Session
 from fastapi import HTTPException
 from app.DB.Student_DB_Model import Student
 from app.Utils.PasswordEncoder import generatePassword, compairPassord
+from app.Utils.JWT_token import generateToken
+from app.DB.Batch_Subject_DB_Model import Batch_Subject
+from app.DB.Subject_DB_Model import Subject
+from app.DB.Student_Subject_DB_Model import Student_Subject
+from datetime import datetime
+from app.DB.Batch_DB_Model import Batch
+from app.DB.Course_DB_Model import Course
 
 async def create_new_student(db: Session, data: dict) -> dict:
     try:
         phone = f"+91 {data['phone']}"
-        is_exist = db.query(Student).filter(Student.phone == phone and Student.professor_id == data["professor_id"]).first()
+        is_exist = db.query(Student).filter(Student.phone == phone).first()
         if is_exist:
             raise HTTPException(status_code=400, detail="Student already in DB")
         
+
         hashedPassword = await generatePassword(data["phone"])
         new_student = Student(
             name=data["name"],
             phone=f"+91 {data['phone']}",
             email="",
-            professor_id=data["professor_id"],
             batch_id=data["batch_id"],
-            course_id=data["course_id"],
             join_date=data["join_date"],
             password=hashedPassword
         )
@@ -25,6 +31,23 @@ async def create_new_student(db: Session, data: dict) -> dict:
         db.add(new_student)
         db.commit()
         db.refresh(new_student)
+
+        subjects = db.query(Subject).join(
+            Batch_Subject,
+            Batch_Subject.subject_id == Subject.id
+        ).filter(
+            Batch_Subject.batch_id == data["batch_id"]
+        ).all()
+
+        for sub in subjects:
+            new_sub = Student_Subject(
+                student_id = new_student.id,
+                subject_id = sub.id,
+                start_date = datetime.now(),
+                fee_at_join_time = sub.default_fee
+            )
+            db.add(new_sub)
+        db.commit()
     
         return {
             "message": "New Student created"
@@ -35,17 +58,41 @@ async def create_new_student(db: Session, data: dict) -> dict:
         raise HTTPException(status_code=500, detail=str(e))
     
 
-async def fetch_all_students(db: Session, data) -> list:
+async def fetch_all_students(db: Session) -> list:
     try:
         students = db.query(
-            Student
-        ).filter(
-            Student.professor_id == data["professor_id"]
+            Student,
+            Batch,
+            Course
+        ).join(
+            Batch, Batch.id == Student.batch_id
+        ).join(
+            Course, Batch.course_id == Course.id
         ).order_by(Student.join_date.desc()).all()
         if not students or len(students) == 0:
             raise HTTPException(status_code=400, detail="No records found")
-        
-        return students
+        response = []
+        for student, batch, course in students:
+            new_data = {
+                "id": student.id,
+                "name":student.name,
+                "phone": student.phone,
+                "email": student.email,
+                "batch": {
+                    "id": batch.id,
+                    "batch_name": batch.batch_name,
+                    "shedule": batch.shedule,
+                    "year": batch.year
+                },
+                "course": {
+                    "id": course.id,
+                    "name": course.name
+                },
+                "join_date": student.join_date
+            }
+            response.append(new_data)
+
+        return response
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -57,7 +104,6 @@ async def fetch_students_by_batch(db: Session, data: dict):
         students = db.query(
             Student
         ).filter(
-            Student.professor_id == data["professor_id"],
             Student.batch_id == data["batch_id"]
         ).all()
         if not students or len(students) == 0:
@@ -83,7 +129,12 @@ async def student_login(db: Session, data: dict):
         if not is_password_valid:
             raise HTTPException(status_code=400, detail="Password does not match")
         
-        return student
+        token = generateToken({ "id": student.id, "role": "student" })
+
+        return {
+            "user": student,
+            "token": token
+        }
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -104,25 +155,6 @@ async def delete_student(db: Session, data: int):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
    
-    
-async def update_student(db: Session, data: dict):
-    try:
-        student = db.query(Student).filter(
-            Student.id == data["id"]
-        ).first()
-        if not student:
-            raise HTTPException(status_code=400, detail="No records found")
-        
-        student.name = data["name"]
-        student.phone = f"+91 {data['phone']}" # type: ignore
-        student.batch_id = data["batch_id"]
-        db.commit()
-        db.refresh(student)
-        return {"message": "Student updated successfully"}
-    except HTTPException as e:
-        raise e
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 
 async def update_student_details (db: Session, data) -> dict:

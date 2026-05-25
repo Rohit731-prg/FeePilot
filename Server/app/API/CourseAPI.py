@@ -19,7 +19,6 @@ async def create_new_course_route(
     try:
         res = await create_new_Course(db, {
             "name": data.name,
-            "professor_id": user_id["id"]
         })
         response.status_code = 201
         return res
@@ -36,7 +35,7 @@ async def get_all_course_route(
     user_id: int = Depends(verify)
 ):
     try:
-        data = await get_all_course(db, {"professor_id": user_id})
+        data = await get_all_course(db)
         response.status_code = 200
         return data
     except HTTPException as e:

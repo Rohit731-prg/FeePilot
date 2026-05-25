@@ -25,21 +25,21 @@ function Payment_Student() {
 
   useEffect(() => {
     if (payments) {
-      setFilterPayment(payments);
+      setFilterPayment(payments?.payments);
     }
   }, [payments]);
 
   const update_payments = (type) => {
     if (type === "all") {
-      setFilterPayment(payments);
+      setFilterPayment(payments?.payments);
     } else if (type === "due") {
-      const duePayments = payments.filter(
+      const duePayments = payments.payments.filter(
         (payment) => payment.status === "Due",
       );
 
       setFilterPayment(duePayments);
     } else {
-      setFilterPayment(payments);
+      setFilterPayment(payments?.payments);
     }
   };
 
@@ -103,7 +103,7 @@ function Payment_Student() {
     </p>
 
     <h2 className="text-2xl font-bold mt-1">
-      {payments?.length || 0}
+      {payments?.payments?.length || 0}
     </h2>
   </div>
 
@@ -119,11 +119,7 @@ function Payment_Student() {
     </p>
 
     <h2 className="text-2xl font-bold mt-1 text-green-400">
-      {
-        payments?.filter(
-          (item) => item.status === "Paid"
-        ).length
-      }
+      {payments?.Total_Paid}
     </h2>
   </div>
 
@@ -139,11 +135,7 @@ function Payment_Student() {
     </p>
 
     <h2 className="text-2xl font-bold mt-1 text-red-400">
-      {
-        payments?.filter(
-          (item) => item.status === "Due"
-        ).length
-      }
+      {payments?.Total_Due}
     </h2>
   </div>
 </section>

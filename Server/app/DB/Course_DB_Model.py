@@ -6,4 +6,3 @@ class Course(base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
-    professor_id = Column(Integer, ForeignKey("Admin.id"))

@@ -13,7 +13,6 @@ class Student(BaseModel):
             raise ValueError("Enter a valid phone number")
         return vle
     batch_id: int = Field(...)
-    course_id: int = Field(...)
     join_date: date = Field(...)
 
 class Update_Student(BaseModel):
